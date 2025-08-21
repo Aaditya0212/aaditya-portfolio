@@ -2020,6 +2020,37 @@
             window.initializing = true;
             
             try {
+                // Handle redirects from 404.html
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect');
+                
+                if (redirect) {
+                    // Remove the redirect parameter from URL
+                    window.history.replaceState({}, document.title, '/aaditya-portfolio/');
+                    
+                    // Navigate to the intended section
+                    setTimeout(() => {
+                        if (redirect === 'experience') {
+                            navigateToSection('experience');
+                        } else if (redirect === 'projects') {
+                            navigateToSection('projects');
+                        } else if (redirect === 'blog') {
+                            navigateToSection('blog');
+                        } else if (redirect.includes('blog/')) {
+                            navigateToSection('blog');
+                            // If it's a specific blog post, expand it
+                            setTimeout(() => {
+                                if (redirect.includes('prompt-performance-user-behavior-dashboard')) {
+                                    const blogCard = document.querySelector('.blog-card');
+                                    if (blogCard) {
+                                        toggleBlog(blogCard);
+                                    }
+                                }
+                            }, 100);
+                        }
+                    }, 100);
+                }
+                
                 // Initialize theme from localStorage or system preference
                 const savedTheme = localStorage.getItem('theme');
                 const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -2029,8 +2060,10 @@
                     document.querySelector('.theme-toggle').textContent = '🌙';
                 }
                 
-                // Initialize page from URL
-                initializeFromURL();
+                // Initialize page from URL if no redirect
+                if (!redirect) {
+                    initializeFromURL();
+                }
                 
                 // Close mobile menu when clicking outside
                 document.addEventListener('click', function(event) {
