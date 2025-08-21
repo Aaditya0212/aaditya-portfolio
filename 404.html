@@ -1799,19 +1799,18 @@
             let newPath;
             
             if (section === 'blog' && blogSlug) {
-                newPath = `/blog/${blogSlug}`;
+                newPath = `/aaditya-portfolio/blog/${blogSlug}`;
             } else if (section === 'home') {
-                newPath = '/';
+                newPath = '/aaditya-portfolio/';
             } else {
-                newPath = `/${section}`;
+                newPath = `/aaditya-portfolio/${section}`;
             }
             
             // Update URL without reloading page
-            const newURL = window.location.origin + newPath;
             window.history.pushState({ 
                 section: section, 
                 blogSlug: blogSlug 
-            }, '', newURL);
+            }, '', newPath);
 
             // Update page title
             updatePageTitle(section, blogSlug);
@@ -1842,7 +1841,16 @@
         // Handle browser back/forward buttons
         window.addEventListener('popstate', function(event) {
             const path = window.location.pathname;
-            const section = routes[path] || 'home';
+            let section = 'home';
+            
+            // Extract section from path
+            if (path.includes('/aaditya-portfolio/experience')) {
+                section = 'experience';
+            } else if (path.includes('/aaditya-portfolio/projects')) {
+                section = 'projects';
+            } else if (path.includes('/aaditya-portfolio/blog')) {
+                section = 'blog';
+            }
             
             showSection(section);
             
@@ -1892,7 +1900,16 @@
         // Initialize page based on URL path
         function initializeFromURL() {
             const path = window.location.pathname;
-            const section = routes[path] || 'home';
+            let section = 'home';
+            
+            // Detect section from URL path
+            if (path.includes('/experience')) {
+                section = 'experience';
+            } else if (path.includes('/projects')) {
+                section = 'projects';
+            } else if (path.includes('/blog')) {
+                section = 'blog';
+            }
             
             showSection(section);
             updatePageTitle(section);
